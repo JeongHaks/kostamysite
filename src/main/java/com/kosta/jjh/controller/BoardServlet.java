@@ -35,6 +35,7 @@ public class BoardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 			request.setCharacterEncoding("UTF-8");
+			HttpSession session = request.getSession();
 			String actionName = request.getParameter("a");
 			System.out.println("board:" + actionName);
 			
@@ -91,11 +92,15 @@ public class BoardServlet extends HttpServlet {
 	    
 		} else if ("read".equals(actionName)) {
 			// 게시물 가져오기
+//			 HttpSession session = request.getSession(); //reply.jsp에 값을 전달해 title / content 내용을 불러오기 위한 세션
+	         
 			 int no = Integer.parseInt(request.getParameter("no"));
 			 request.setAttribute("pass", request.getParameter("pass"));
 	         request.setAttribute("no", no);
+	         
 	         BoardDao dao = new BoardDaoImpl();
-	         BoardVo boardVo = dao.getBoard(no);		         
+	         BoardVo boardVo = dao.getBoard(no);
+	         session.setAttribute("vo", boardVo);
 			 dao.upCount(boardVo); //게시물 조회 시 조회증가 +1
 
 			String nowPage = request.getParameter("nowPage");
@@ -127,6 +132,10 @@ public class BoardServlet extends HttpServlet {
 			WebUtil.redirect(request, response, "/mysite/board?a=list");
 		} else if ("writeform".equals(actionName)) {
 			// 글 쓰기 
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			request.setAttribute("title", title);
+			request.setAttribute("content", content);
 			UserVo authUser = getAuthUser(request);
 			if (authUser != null) { // 로그인했으면 작성페이지로
 				WebUtil.forward(request, response, "/WEB-INF/views/board/writeform.jsp");
@@ -141,7 +150,7 @@ public class BoardServlet extends HttpServlet {
 		         // 서버에 올라간 경로를 가져옴
 		         ServletContext context = getServletContext();
 		         //String uploadFilePath = "C:\\Users\\chall\\eclipse-workspace\\mysite\\src\\main\\webapp\\WEB-INF\\views\\fileupload";
-		         String uploadFilePath = "C:\\Users\\KOSTA\\eclipse-workspace\\mysite\\src\\main\\webapp\\WEB-INF\\views\\fileupload";
+		         String uploadFilePath = "C:\\Users\\chall\\eclipse-workspace\\mysite\\src\\main\\webapp\\WEB-INF\\views\\fileupload";
 		         String filePath = uploadFilePath + File.separator + fileName;
 		         		         		   		         
 		         byte[] b = new byte[4096]; //바이트배열로 저장소만들어주기

@@ -14,29 +14,6 @@ pageContext.setAttribute( "newLine", "\n" );
 <%@ page import="java.util.Enumeration" %>
 <%@ page import="java.io.*" %>
 
-<%
-	//조회 수 증가
-	 
-	 BoardDao dao = new BoardDaoImpl();	
-	 int no = Integer.parseInt(String.valueOf(request.getAttribute("no")));
-	 
-	 
-	//파일 		
-	  BoardVo vo = dao.getBoard(no); 	 	 
-	  String filename = vo.getFilename();
-	  long filesize = vo.getFilesize();
-	  long filesize1 = vo.getFilesize1();
-	  String filename1 = vo.getFilename1();
-	  //답변
-	  String keyField = request.getParameter("keyField");
-	  String keyWord = request.getParameter("keyWord");
-	  String nowPage = request.getParameter("nowPage");
-	  String pass = vo.getPass();
-	  String password = (String)request.getAttribute("pass");
-	  
-      session.setAttribute("vo", vo); //답변에 원글 제목,내용값을 가져오기 위해 vo에 값들을 담아놓는다.
-      
-%>
 
 <!DOCTYPE html>
 <html>
@@ -52,9 +29,9 @@ pageContext.setAttribute( "newLine", "\n" );
     }
 </script>
 <form name=listForm method=post action=List.jsp>
-    <input type="hidden" name="nowPage" value="<%=nowPage%>">
-    <input type="hidden" name="keyField" value="<%=keyField%>">
-    <input type="hidden" name="keyWord" value="<%=keyWord%>">
+    <input type="hidden" name="nowPage" value="${param.nowPage } }">
+    <input type="hidden" name="keyField" value="${keyField }">
+    <input type="hidden" name="keyWord" value="${keyWord }">
 </form>
 <br><br>
 <body>
@@ -76,19 +53,30 @@ pageContext.setAttribute( "newLine", "\n" );
 					<tr>
 		                  <td class="label">파일1</td>
 		                  <td>
-		                     <% if( filename !=null && !filename.equals("")) {%>
-		                        <a href="/mysite/board?a=download&filename=${boardVo.filename }">${boardVo.filename }</a>
-		                     &nbsp;&nbsp;<font color="blue">(${boardVo.filesize }KBytes)</font>  
-		                        <%} else{%> 등록된 파일이 없습니다.<%}%>
+		                    <c:choose>
+                              <c:when test="${not empty filename}">
+                                  <a href="/mysite/board?a=download&filename=${boardVo.filename }">${boardVo.filename }</a>
+                                  &nbsp;&nbsp;<font color="blue">(${boardVo.filesize }KBytes)</font>  
+                              </c:when>
+                              <c:otherwise>
+                                 <p colspan="6"> 등록된 파일이 없습니다.</p>
+                              </c:otherwise>
+                           </c:choose>                 
 		                  </td>
                		</tr>
                		<tr>
 		                  <td class="label">파일2</td>
 		                  <td>
-		                     <% if( filename1 !=null && !filename1.equals("")) {%>
-		                        <a href="/mysite/board?a=download&filename=${boardVo.filename1 }">${boardVo.filename1 }</a>
-		                     &nbsp;&nbsp;<font color="blue">(${boardVo.filesize1 }KBytes)</font>  
-		                        <%} else{%> 등록된 파일이 없습니다.<%}%>
+		                    <c:choose>
+                              <c:when test="${ not empty filename1}">
+                                  <a href="/mysite/board?a=download&filename=${boardVo.filename1 }">${boardVo.filename1 }</a>
+                                  &nbsp;&nbsp;<font color="blue">(${boardVo.filesize1 }KBytes)</font>  
+                              </c:when>
+                              <c:otherwise>
+                                 <p colspan="6"> 등록된 파일이 없습니다.</p>
+                              </c:otherwise>
+                           </c:choose>
+
 		                  </td>
                		</tr>
 					<tr>
@@ -104,10 +92,10 @@ pageContext.setAttribute( "newLine", "\n" );
 					<a href="/mysite/board">글목록</a>
 					
 					<c:if test="${authUser.no == boardVo.userNo }">
-						<a href="/mysite/board?a=modifyform&no=<%=no%>&nowPage=<%=nowPage%>&pass=${boardVo.pass}">글수정</a>
+						<a href="/mysite/board?a=modifyform&no=${boardVo.no }&nowPage=${param.nowPage }&pass=${boardVo.pass}">글수정</a>
 					</c:if>
 					<c:if test="${authUser.no !=null }">
-					<a href="/mysite/board?a=reply&nowPage=<%=nowPage%>&ref=${boardVo.ref}&depth=${boardVo.depth}&pos=${boardVo.pos}&userNo=${boardVo.userNo}" >답 변</a>
+					<a href="/mysite/board?a=reply&nowPage=${param.nowPage }&ref=${boardVo.ref}&depth=${boardVo.depth}&pos=${boardVo.pos}&userNo=${boardVo.userNo}" >답 변</a>
 					</c:if> 
 				</div>
 			</div>

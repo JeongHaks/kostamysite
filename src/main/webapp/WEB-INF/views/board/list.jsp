@@ -295,7 +295,7 @@ function check() {
 						<div class="bottom">
 						<align="right">
 						<!-- 글쓰기 버튼을 클릭 시 writeform.jsp 넣어가서 수행 -->
-						<a href="/mysite/board?a=writeform&nowPage=<%=nowPage %> %>" id="new-book">글쓰기</a>
+						<a href="/mysite/board?a=writeform&nowPage=<%=nowPage %>" id="new-book">글쓰기</a>
 						</div>
 					</c:if>				
 				</div>

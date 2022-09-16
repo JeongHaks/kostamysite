@@ -31,7 +31,7 @@ public class BoardfileServlet extends HttpServlet {
 	
 	private static final String CHARSET = "utf-8";
 	//private static final String ATTACHES_DIR = "C:\\Users\\chall\\eclipse-workspace\\mysite\\src\\main\\webapp\\WEB-INF\\views\\fileupload";
-	private static final String ATTACHES_DIR = "C:\\Users\\KOSTA\\eclipse-workspace\\mysite\\src\\main\\webapp\\WEB-INF\\views\\fileupload";
+	private static final String ATTACHES_DIR = "C:\\Users\\chall\\eclipse-workspace\\mysite\\src\\main\\webapp\\WEB-INF\\views\\fileupload";
 	private static final int LIMIT_SIZE_BYTES = 5 * 1024 * 1024;
 	
 	@Override
@@ -108,12 +108,13 @@ public class BoardfileServlet extends HttpServlet {
                }
                
             }
-        	System.out.println("filename : ["+fileName+"]");
-			System.out.println("filename1 : ["+fileName1+"]");
+        	System.out.println("title : " + title + "content  : " + content);
+        	System.out.println("filename : " + fileName + "filename1 : " + fileName1 );
             BoardVo vo = new BoardVo(title, content, userNo,fileName ,fileSize,fileName1,fileSize1);
             BoardDao dao = new BoardDaoImpl();
             dao.insert(vo);
-			System.out.println("파일업로드완료");
+			
+            System.out.println("파일업로드완료");
 			
             
 		

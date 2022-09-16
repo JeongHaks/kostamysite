@@ -37,7 +37,7 @@
 			<div id="board">
 				<form class="board-form" method="post" action="/mysite/board">
 					<input type="hidden" name="a" value="modify" />
-					<input type="hidden" name="no" value=<%=no %> />
+					<input type="hidden" name="no" value=${boardVo.no } />
 				
 					<table class="tbl-ex">
 						<tr>
@@ -62,7 +62,7 @@
 					</table>
 				
 					<div class="bottom">
-						<a href="/mysite/board?a=list&nowPage=<%=nowPage%>">취소</a>
+						<a href="/mysite/board?a=list&nowPage=${param.nowPage }">취소</a>
 						<input type="submit" value="수정" onClick="return check()" onKeyup="onlyNumber(this)">
 					</div>
 				</form>				

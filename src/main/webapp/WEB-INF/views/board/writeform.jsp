@@ -7,14 +7,6 @@
 <%@ page import="java.net.URLEncoder" %>
 <%@ page import="java.io.File" %> 
 
-<%
-//v파일 다운로드 		
-	String title = request.getParameter("title");
-	request.setAttribute("title", title);
-	String content = request.getParameter("content");
-	request.setAttribute("content", content); 
-
-%>
 <!DOCTYPE html>
 <html>
 <head>
