@@ -41,29 +41,26 @@ public class BoardServlet extends HttpServlet {
 			
 		if ("list".equals(actionName)) {
 			// 리스트 가져오기
-			int no = Integer.parseInt(request.getParameter("no"));
+			
 			BoardDao dao = new BoardDaoImpl();
-	        BoardVo boardVo = dao.getBoard(no);
-	        session.setAttribute("boardVo", boardVo);
+			
 			int totalRecord = 0; //전체 레코드 수
 			int numPerPage = 3; //페이지당 레코드 수
-			request.setAttribute("numPerPage", numPerPage);
 			int pagePerBlock = 5; //블럭당 페이지 수 
 			
-			int totalPage = 0;   //전체 페이지 수
-			int totalBlock = 0;  //전체 블럭수 
-
+			int totalPage=0;
+			int totalBlock=0;
+			
 			int nowPage = 1;   // 현재페이지
 			int nowBlock = 1;  // 현재블럭
 			
 			int start = 0; // 디비의 select 시작번호
 			int end = 10;  //시작번호로 부터 가져올 select 갯수
 			  
-			int listSize = 0; //현재 읽어온 게시물의 수
+			int listSize=0;
 			
 			//키워드 검색 시작 keyWord = 검색할 문자열  / keyField = 찾기 value값  
 		  	String keyWord = "", keyField = "";
-		  	Vector<BoardVo> vlist = null;
 		  	//컬럼이 널이 아니라면~
 		  	if (request.getParameter("keyWord") != null) {
 		  		keyWord = request.getParameter("keyWord");
@@ -75,20 +72,59 @@ public class BoardServlet extends HttpServlet {
 		  			keyField = "";
 		  		}
 		  	}
-			//현재 페이지를 받아온다. nowPage에 담아둔다.
-			if(request.getParameter("nowPage") != null){
-				nowPage = Integer.parseInt(request.getParameter("nowPage"));
-			}
-			start = (nowPage * numPerPage)-numPerPage;
+		  	
+		  	if (request.getParameter("nowPage") != null) {
+	            nowPage = Integer.parseInt(request.getParameter("nowPage"));
+	         }
+		  	
+		  	start = (nowPage * numPerPage)-numPerPage;
 			//만약에 현재 페이지가 11이라면 11 = (11*7) - 7 = 70
 			//한 페이지당 레코드 수가 7이기 때문에 현재 페이지가 11이라면 11은 70~80에 들어간다.
-		  	end = numPerPage;		  	
+		  	end = numPerPage;			
+		  	
+		  	
+		  	
+		  	totalRecord = dao.getTotalCount(keyField, keyWord);           //전체 게시물 건수 -> BoardDaoImpl의 getTotalCount메서드로 이동
+		  	totalPage = (int)Math.ceil((double)totalRecord / numPerPage);  //전체페이지수 (ceil란 정수 올림 ))
+		  	totalBlock = (int)Math.ceil((double)totalPage / pagePerBlock); //전체블럭계산	
+		  	
+			
+			
+			nowBlock = (int)Math.ceil((double)nowPage/pagePerBlock);       //현재블럭 계산  100/15 = 6.6666->7로 계산  
+			
+			
+			int pageStart = (nowBlock -1)*pagePerBlock + 1 ; //하단 페이지 시작번호
+			int pageEnd = ((pageStart + pagePerBlock ) <= totalPage) ?  (pageStart + pagePerBlock): totalPage+1;
+			Vector<BoardVo> list = dao.getBoardList(keyField, keyWord, start, end);
+			listSize = list.size();
+			request.setAttribute("listSize", listSize);
+			
+		  	
+		  	
+		  	
+		  	
 		  //기준값이 7이기 때문에 sql문에서 출력해줄 범위의 블럭수를 작성해줘서 수행한다.
-			Vector<BoardVo> list = dao.getBoardList(keyField, keyField, start, end);
-
+			
+			
 			// 리스트 화면에 보내기
 			request.setAttribute("list", list);
 			//WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
+			System.out.println("서블릿 list : " + list.toString());
+			request.setAttribute("keyWord", keyWord);
+		  	request.setAttribute("keyField", keyField);
+			//현재 페이지를 받아온다. nowPage에 담아둔다.
+		  	
+			//
+		  	request.setAttribute("totalRecord", totalRecord);
+			request.setAttribute("numPerPage", numPerPage);
+			request.setAttribute("pagePerBlock", pagePerBlock);
+			
+			request.setAttribute("totalPage", totalPage);
+		  	request.setAttribute("totalBlock", totalBlock);
+			request.setAttribute("nowPage", nowPage);
+			request.setAttribute("nowBlock", nowBlock);
+			request.setAttribute("pageStart", pageStart);
+			request.setAttribute("pageEnd", pageEnd);
 			
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/board/list.jsp");
 			rd.forward(request, response);
@@ -108,6 +144,9 @@ public class BoardServlet extends HttpServlet {
 			 dao.upCount(boardVo); //게시물 조회 시 조회증가 +1
 
 			String nowPage = request.getParameter("nowPage");
+			if (request.getParameter("nowPage") != null) {
+	            nowPage = request.getParameter("nowPage");
+	         }
 			request.setAttribute("nowPage", nowPage);
 			// 게시물 화면에 보내기
 			request.setAttribute("boardVo", boardVo);
@@ -138,6 +177,9 @@ public class BoardServlet extends HttpServlet {
 		} else if ("writeform".equals(actionName)) {
 			// 글 쓰기 
 			String nowPage = request.getParameter("nowPage");
+			if (request.getParameter("nowPage") != null) {
+	            nowPage = request.getParameter("nowPage");
+	         }
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
 			request.setAttribute("title", title);
