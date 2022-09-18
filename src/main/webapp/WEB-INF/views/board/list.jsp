@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page import="com.kosta.jjh.dao.BoardDao" %>
 <%@ page import="com.kosta.jjh.vo.BoardVo" %>
 <%@ page import="com.kosta.jjh.dao.BoardDaoImpl" %>
@@ -165,13 +166,6 @@ function check() {
 				<!-- 검색 기능 ~ -->
 				
 				<!-- 게시물에 게시글 출력 -->
-				<% 
-					blist = Bmgr.getBoardList(keyField, keyWord,start, end);
-					listSize = blist.size(); 
-					if (blist.isEmpty()) {
-					 out.println("등록된 게시물이 없습니다.");
-				  } else {
-				%>
 				<!-- 상단 바 테이블 -->
 				<table class="tbl-ex" cellpadding="2" cellspacing="0">
 					<tr align="center" bgcolor="#D0D0D0" height="120%">
@@ -182,130 +176,56 @@ function check() {
 						<th>작성일</th>
 						<th>&nbsp;</th>
 					</tr>		
-							
-					<!-- 게시판 리스트 보여줄 for문 -->
-					<%
-					for (int i = 0;i<numPerPage; i++) {
-	                     if (i == listSize) break;
-	                     BoardVo vo = blist.get(i);
-	                     no = vo.getNo();
-	                     String name = vo.getUserName();
-	                     int hit = vo.getHit();
-	                     String title = vo.getTitle();
-	                     String regdate = vo.getRegDate();
-	                     //int depth = vo.getDepth();
-	                     int userNo = vo.getUserNo();
-	                     int ref = vo.getRef();
-	                     int pos = vo.getPos();
-	                    
-					%>
-					<!-- 출력 -->
 					<tr>
-						<td align="center"> <%=no %></td>
-						<td>
-						<%
-							  int depth = vo.getDepth();
-  							  if(depth>0){//부모 게시글이 아니라면(답변글 or 답변의 답변글이라면)
-  								for(int j=0;j<depth;j++){
-  									out.println("&nbsp;&nbsp;"); //depth에 공백 하나 추가...두개 추가...
-  									}
-  								}
-  							  if(depth !=0){
-  								  out.println("ㄴ"); //답변 글 구분하기 위해 "ㄴ"을 넣어준다.
-  							  }
-						%>
-						<!-- 제목을 클릭시 현재 번호와 페이지 ref/pos값을 넘겨준다. -->
-						<a href="/mysite/board?a=read&no=<%=no%>&nowPage=<%=nowPage%>&ref=<%=ref%>&pos=<%=pos%>&pass=<%=pass%>"><%=title%></a>
-						</td>
-						<td align="center"><%=name%></td>					
-						<td align="center"><%=hit%></td>
-						<td align="center"><%=regdate%></td>
-						<td>
-                        <%    UserVo authUser = (UserVo)session.getAttribute("authUser");
-                        	  //user의 no와 게시물의 no가 같다면 삭제를 하여라.
-                           	  if(authUser!=null){
-                              int nom = authUser.getNo();
-	                              if(nom == userNo){%>
-	                           		  <a href="/mysite/board?a=delete&no=<%=no %>" class="del">삭제</a>
-                        <%    		}
-                           	   }%>
-                        </td> <!-- 삭제버튼의 td 종료 -->
-					</tr> 
-					<% } %> <!-- for문 -->
-					</table>
-				<%} %><!-- 시작 if문 -->
-					
-					
-					
+						<c:if test="${fn:length(list) == 0}">
+							<td colspan="6"> 등록된 게시물이 없습니다. </td>
+						</c:if>
+					</tr>	
+					<!-- 게시판 리스트 보여줄 for문 -->
+					<c:forEach var="vo" items="${list }" begin="0" step="1" end="${numPerPage }">
+						<tr>
+							<td>vo.no</td>
+							<td>
+								<c:if test="${vo.depth > 0}">
+									<c:forEach var="cur" begin="0" end="${vo.depth}">
+											&nbsp;
+									</c:forEach>
+								</c:if>
+								<c:if test="${vo.depth != 0}">
+									┗
+								</c:if>
+								<a href="/mysite/board?a=read&no=${vo.no}&ref=${vo.ref}&pos=${vo.pos}">${vo.title}</a>
+							</td>
+							<td>${vo.userName}</td>
+							<td>${vo.hit}</td>
+							<td>${vo.regDate}</td>
+							<td><c:if test="${authUser.no == vo.user_no}">
+									<a href="/mysite/board?a=delete&no=${vo.no}" class="del">삭제</a>
+								</c:if>
+							</td>
+						</tr>
+						
+						
+					</c:forEach>
 					<!-- 페이징 -->
 					<div class="pager">
-												
-					<td>
-					<!-- 페이징 및 블럭 처리 Start--> 
-					<%
-				
-					  	 int pageStart = (nowBlock -1)*pagePerBlock + 1 ; //하단 페이지 시작번호
-					  	//하단 페이지 끝번호 
-		                 int pageEnd = ((pageStart + pagePerBlock ) <= totalPage) ?  (pageStart + pagePerBlock): totalPage+1; 		                 
-		                 if(totalPage !=0){
-		                  if (nowPage > 1) {%>
-		                  <!-- 키워드가 없거나 null 일 경우 -->
-		                     <%if(keyWord ==""||keyWord == null){%>
-		                     <!-- 기존의 페이지 이동 -->
-		                     <a href="/mysite/board?a=list&nowPage=<%=nowPage-1%>">[이전]</a>&nbsp; 
-		                     <%} else { %> <!--  아닐 경우 그 검색된 페이지에서의 이동 -->
-		                     <a href="/mysite/board?a=list&nowPage=<%=nowPage-1%>&keyWord=<%=keyWord%>&keyField=<%=keyField%>">[이전]</a>
-		                     <%} 
-		                     
-		                  }%> <!-- nowpage>1 if -->		                     
-		                     <%for ( ; pageStart < pageEnd; pageStart++){%>
-		                     <!-- 키워드가 없거나 null일 경우  -->
-		                     <%if(keyWord ==""||keyWord == null){%>
-		                     <!-- 검색 안 된 현재 페이지 -->
-		                      <a href="/mysite/board?a=list&nowPage=<%=pageStart %>"> 
-		                    <%if(pageStart==nowPage) {%><font color="blue"> <%}%>
-		                    [<%=pageStart %>] 
-		                    <%if(pageStart==nowPage) {%></font> <%}%></a> 
-		                    <%} else { %>
-		                    <!--  아니라면 검색된 값의 현재 페이지 -->
-		                    <a href="/mysite/board?a=list&nowPage=<%=pageStart%>&keyWord=<%=keyWord%>&keyField=<%=keyField%>">
-		                    <%if(pageStart==nowPage) {%><font color="blue"> <%}%>
-		                    [<%=pageStart %>] 
-		                    <%if(pageStart==nowPage) {%></font> <%}%></a> 
-		                    <%} %>
-		                   <%}//for%>&nbsp; 
-		                   
-		                   
-		                   <%if (totalPage > nowPage ) {%>
-		                   <!-- 키워드 값이 없거나 null일 경우 -->
-		                   <%if(keyWord ==""||keyWord == null){%>
-		                   <!-- 검색 안 된 페이지에서 +1 이동 클릭시  -->
-		                   <a href="/mysite/board?a=list&nowPage=<%=nowPage+1%>">[다음]</a>
-		                   <%} else { %><!-- 아니라면 검색된 값의 페이지에서 +1씩 이동 -->
-		                   <a href="/mysite/board?a=list&nowPage=<%=nowPage+1%>&keyWord=<%=keyWord%>&keyField=<%=keyField%>">[다음]</a>
-		                   <%} %>
-		                <%}%>&nbsp;  <!-- totalpage>nowpage if절 -->
-		               <%}%><!-- 전체 닫기  -->
-
-             		<!-- 페이징 및 블럭 처리 End-->
-		 			</td>
+					
 					</div>
 					<!-- 값들이 등록되어있지 않다면 -->
 					<c:if test="${authUser != null }">
 						<div class="bottom">
 						<align="right">
 						<!-- 글쓰기 버튼을 클릭 시 writeform.jsp 넣어가서 수행 -->
-						<a href="/mysite/board?a=writeform&nowPage=<%=nowPage %>&no=<%=no %>" id="new-book">글쓰기</a>
+						<a href="/mysite/board?a=writeform&nowPage=${param.nowPage }&no=${boardVo.no}" id="new-book">글쓰기</a>
 						</div>
 					</c:if>				
 				</div>
 				<!-- 페이징 처리를 위한 form (action지정이 안되어있어서)현재위치 페이지로.. -->
 				<form name="readFrm" method="get">
 					<input type="hidden" name="num"> 
-					<input type="hidden" name="nowPage" value="<%=nowPage%>"> 
-					<input type="hidden" name="keyField" value="<%=keyField%>"> 
-					<input type="hidden" name="keyWord" value="<%=keyWord%>">
-					<input type="hidden" name="no" value="<%=no %>">
+					<input type="hidden" name="nowPage" value="${param.nowPage }"> 
+					<input type="hidden" name="keyField" value="${boardVo.keyField }"> 
+					<input type="hidden" name="keyWord" value="${boardVo.keyWord }">
 				</form>
 			</div>
 		

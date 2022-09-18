@@ -41,10 +41,13 @@ public class BoardServlet extends HttpServlet {
 			
 		if ("list".equals(actionName)) {
 			// 리스트 가져오기
+			int no = Integer.parseInt(request.getParameter("no"));
 			BoardDao dao = new BoardDaoImpl();
-			
+	        BoardVo boardVo = dao.getBoard(no);
+	        session.setAttribute("boardVo", boardVo);
 			int totalRecord = 0; //전체 레코드 수
-			int numPerPage = 3; //페이지당 레코드 수 
+			int numPerPage = 3; //페이지당 레코드 수
+			request.setAttribute("numPerPage", numPerPage);
 			int pagePerBlock = 5; //블럭당 페이지 수 
 			
 			int totalPage = 0;   //전체 페이지 수
