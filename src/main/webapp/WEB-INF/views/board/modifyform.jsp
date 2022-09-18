@@ -5,10 +5,6 @@
 <%@ page import="com.kosta.jjh.dao.BoardDaoImpl" %>
 
 <%
-	BoardVo vo = new BoardVo();	
-	String no = String.valueOf(request.getAttribute("no"));
-	String nowPage = String.valueOf(request.getParameter("nowPage"));		
-	String pass = request.getParameter("pass");	
 %>
 <!DOCTYPE html>
 <html>
@@ -21,7 +17,7 @@
 <script>
    function check(){
       var password = document.getElementById("pass");
-      if(<%=pass%>!=password.value){
+      if(${boardVo.pass}!=password.value){
     	  alert("비밀번호가 틀렸습니다. 다시 입력해 주세요(숫자만 가능합니다.)");
          password.focus();
          return false;
@@ -45,19 +41,19 @@
 						</tr>
 						<tr>
 							<td class="label">제목</td>
-							<td><input type="text" name="title" value="${boardVo.title}"></td>
+							<td><input type="text" name="title" value="${sessionScope.boardVo.title}"></td>
 						</tr>
 						<tr>
 							<td class="label">내용</td>
 							<td>
-								<textarea id="content" name="content">${boardVo.content}</textarea>
+								<textarea id="content" name="content">${sessionScope.boardVo.content}</textarea>
 							</td>
 						</tr>
 						<c:if test="${boardVo.pos >0}">
-						<tr height="40">
-                    		<td width="150" align="center" size="10">비밀번호</td>
-	                    <td width="450"><input type="password" id= "pass" name="pass" size="17" placeholder="숫자만 가능합니다."></td>
-                		</tr>
+							<tr height="40">
+	                    		<td width="150" align="center" size="10">비밀번호</td>
+		                    <td width="450"><input type="password" id= "pass" name="pass" size="17" placeholder="숫자만 가능합니다."></td>
+	                		</tr>
                 		</c:if>
 					</table>
 				

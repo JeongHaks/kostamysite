@@ -32,7 +32,7 @@ function inNumber(){ //숫자만 입력받기
  				
                 <tr height="40">
                     <td width="150" align="center">제목</td>
-                    <td width="450"><input type="text" name="title" value="[답변] : ${sessionScope.vo.title } "
+                    <td width="450"><input type="text" name="title" value="[답변] : ${sessionScope.boardVo.title } "
                         size="60"></td>
                 </tr>
  
@@ -44,7 +44,7 @@ function inNumber(){ //숫자만 입력받기
                 <tr height="40">
                     <td width="150" align="center">글내용</td>
                     <td width="450"><textarea rows="10" cols="60" name="content">
- >> ${sessionScope.vo.content }
+ >> ${sessionScope.boardVo.content }
 
 <==아래에 답변을 작성해주세요==>
                     </textarea></td>

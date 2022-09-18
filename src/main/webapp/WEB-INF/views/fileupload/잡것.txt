@@ -1,0 +1,3 @@
+totalpage = 25/7 = (3페이지 +4페이지의 4개 게시글)
+numblock = 1/5 = (0)
+totalblock = 3/5 = 0 

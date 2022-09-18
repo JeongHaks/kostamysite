@@ -101,6 +101,7 @@ public class BoardServlet extends HttpServlet {
 	         BoardDao dao = new BoardDaoImpl();
 	         BoardVo boardVo = dao.getBoard(no);
 	         session.setAttribute("boardVo", boardVo);
+	         System.out.println("서블릿 :ㅣ " + boardVo.toString());
 			 dao.upCount(boardVo); //게시물 조회 시 조회증가 +1
 
 			String nowPage = request.getParameter("nowPage");
@@ -113,6 +114,7 @@ public class BoardServlet extends HttpServlet {
 			int no = Integer.parseInt(request.getParameter("no"));
 			BoardDao dao = new BoardDaoImpl();
 			BoardVo boardVo = dao.getBoard(no);
+			session.setAttribute("boardVo", boardVo);
 			request.setAttribute("no", no);
 
 			// 게시물 화면에 보내기
@@ -132,11 +134,12 @@ public class BoardServlet extends HttpServlet {
 			WebUtil.redirect(request, response, "/mysite/board?a=list");
 		} else if ("writeform".equals(actionName)) {
 			// 글 쓰기 
-			
+			String nowPage = request.getParameter("nowPage");
 			String title = request.getParameter("title");
 			String content = request.getParameter("content");
 			request.setAttribute("title", title);
 			request.setAttribute("content", content);
+			request.setAttribute("nowPage", nowPage);
 			
 			UserVo authUser = getAuthUser(request);
 			if (authUser != null) { // 로그인했으면 작성페이지로

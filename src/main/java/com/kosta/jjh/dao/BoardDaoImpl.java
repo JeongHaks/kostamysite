@@ -109,7 +109,7 @@ public class BoardDaoImpl implements BoardDao {
 		  conn = getConnection();
 		  	
 			// 3. SQL문 준비 / 바인딩 / 실행
-			String query = " select b.no, b.title, b.content, b.hit, b.reg_date, b.user_no, b.pos,b.ref,b.depth, u.name ,b.filename, b.filename2,b.filesize, b.filesize1 ,b.pass "
+			String query = " select b.no, b.title, b.content, b.hit, b.reg_date, b.user_no,b.ref, b.pos,b.depth, u.name ,b.filename, b.filesize,b.filename2, b.filesize1 ,b.pass "
 					     + " from board b, users u "
 					     + " where b.user_no = u.no "
 					     + " and b.no = ?";
@@ -126,19 +126,19 @@ public class BoardDaoImpl implements BoardDao {
 				int hit = rs.getInt("hit");
 				String regDate = rs.getString("reg_date");
 				int userNo = rs.getInt("user_no");
-				int pos = rs.getInt("pos");
 				int ref = rs.getInt("ref");
+				int pos = rs.getInt("pos");
 				int depth = rs.getInt("depth");
 				String userName = rs.getString("name");
 				String filename = rs.getString("filename");				
-				String filename1 = rs.getString("filename2");
 				long filesize = rs.getLong("filesize");
+				String filename1 = rs.getString("filename2");
 				long filesize1 = rs.getLong("filesize1");
 				String pass = rs.getString("pass");
 				
-				boardVo = new BoardVo(no, title, content, hit, regDate, userNo, userName ,pos,ref,depth,filename, filename1,filesize,filesize1,pass);
+				boardVo = new BoardVo(no, title, content, hit, regDate, userNo, userName ,ref,pos,depth,filename,filesize, filename1,filesize1,pass);
 			}			
-
+			System.out.println(boardVo.toString());
 		} catch (SQLException e) {
 			System.out.println("error:" + e);
 		} finally {
@@ -187,23 +187,23 @@ public class BoardDaoImpl implements BoardDao {
 				  
 		      
 					// 3. SQL문 준비 / 바인딩 / 실행
-					String query = "insert into board values (seq_board_no.nextval, ?, ?, 0, sysdate, ? ,?,?,?, ?,?,?,?,?)";
+					String query = "insert into board values (seq_board_no.nextval, ?, ?, 0,sysdate,?,?,?,?, ?,?,?,?,?)";
 					pstmt = conn.prepareStatement(query);
 
 					pstmt.setString(1, vo.getTitle());
 					pstmt.setString(2, vo.getContent());
 					pstmt.setInt(3, vo.getUserNo());					
-					pstmt.setInt(4, pos);
-					pstmt.setInt(5, ref);
+					pstmt.setInt(4, ref);
+					pstmt.setInt(5, pos);
 					pstmt.setInt(6, depth);
-					pstmt.setString(7, vo.getFilename());					
-					pstmt.setString(8, vo.getFilename1());
-					pstmt.setLong(9, vo.getFilesize());
+					pstmt.setString(7, vo.getFilename());
+					pstmt.setLong(8, vo.getFilesize());
+					pstmt.setString(9, vo.getFilename1());
 					pstmt.setLong(10, vo.getFilesize1());
 					pstmt.setString(11, vo.getPass());
 					
 					
-					
+					System.out.println("insert ref : " + ref);
 		      
 					count = pstmt.executeUpdate();
 					System.out.println("insert : " + vo.toString());
@@ -459,14 +459,14 @@ public class BoardDaoImpl implements BoardDao {
 	      try {
 	         conn = getConnection();
 	         //sql = "insert into board values (seq_board_no.nextval, ?, ?, 0, sysdate, 0,?,?,?,0,0,0,0,?)";
-	         sql="insert into board(no,title,content,hit,user_no, pos,ref,depth,reg_date,pass)";
+	         sql="insert into board(no,title,content,hit,user_no, ref,pos,depth,reg_date,pass)";
 	         sql+=" values(seq_board_no.nextval,?,?,0,?,?,?,?,sysdate,?)";
 	         pstmt = conn.prepareStatement(sql);
 	         pstmt.setString(1, vo.getTitle());
 	         pstmt.setString(2, vo.getContent());	         
 	         pstmt.setInt(3, vo.getUserNo());	         
-	         pstmt.setInt(4, vo.getPos()+1);
-	         pstmt.setInt(5, vo.getRef());
+	         pstmt.setInt(4, vo.getRef());
+	         pstmt.setInt(5, vo.getPos()+1);
 	         pstmt.setInt(6, vo.getDepth()+1);
 	         pstmt.setString(7, vo.getPass());
 	         

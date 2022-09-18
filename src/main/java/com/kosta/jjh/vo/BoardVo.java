@@ -180,7 +180,7 @@ public class BoardVo {
 	
 	
 	//getboard
-	public BoardVo(int no,String title,String content, int hit,String regDate,int userNo,String userName ,int pos, int ref, int depth,String filename ,String filename1,long filesize, long filesize1, String pass) {
+	public BoardVo(int no,String title,String content, int hit,String regDate,int userNo,String userName ,int ref, int pos, int depth,String filename ,long filesize,String filename1, long filesize1, String pass) {
 		super();
 		this.no=no;
 		this.title = title;
@@ -189,12 +189,12 @@ public class BoardVo {
 		this.regDate = regDate;
 		this.userNo = userNo;
 		this.userName = userName;	
-		this.pos = pos;
 		this.ref= ref;
+		this.pos = pos;
 		this.depth = depth;
 		this.filename = filename;		
-		this.filename1= filename1;
 		this.filesize= filesize;
+		this.filename1= filename1;
 		this.filesize1 = filesize1;
 		this.pass = pass;
 	}

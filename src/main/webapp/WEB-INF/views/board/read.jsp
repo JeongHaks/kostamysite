@@ -54,7 +54,7 @@ pageContext.setAttribute( "newLine", "\n" );
 		                  <td class="label">파일1</td>
 		                  <td>
 		                    <c:choose>
-                              <c:when test="${not empty filename}">
+                              <c:when test="${not empty boardVo.filename}">
                                   <a href="/mysite/board?a=download&filename=${boardVo.filename }">${boardVo.filename }</a>
                                   &nbsp;&nbsp;<font color="blue">(${boardVo.filesize }KBytes)</font>  
                               </c:when>
@@ -68,7 +68,7 @@ pageContext.setAttribute( "newLine", "\n" );
 		                  <td class="label">파일2</td>
 		                  <td>
 		                    <c:choose>
-                              <c:when test="${ not empty filename1}">
+                              <c:when test="${ not empty boardVo.filename1}">
                                   <a href="/mysite/board?a=download&filename=${boardVo.filename1 }">${boardVo.filename1 }</a>
                                   &nbsp;&nbsp;<font color="blue">(${boardVo.filesize1 }KBytes)</font>  
                               </c:when>
@@ -89,7 +89,7 @@ pageContext.setAttribute( "newLine", "\n" );
 					</tr>
 				</table>
 				<div class="bottom">
-					<a href="/mysite/board">글목록</a>
+					<a href="/mysite/board?a=list&nowPage=${param.nowPage }">글목록</a>
 					
 					<c:if test="${authUser.no == boardVo.userNo }">
 						<a href="/mysite/board?a=modifyform&no=${boardVo.no }&nowPage=${param.nowPage }&pass=${boardVo.pass}">글수정</a>
