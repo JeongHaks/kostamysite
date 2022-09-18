@@ -206,10 +206,9 @@ public class BoardDaoImpl implements BoardDao {
 					
 		      
 					count = pstmt.executeUpdate();
-
+					System.out.println("insert : " + vo.toString());
 					// 4.결과처리
 					System.out.println(count + "건 등록");
-
 				} catch (SQLException e) {
 					System.out.println("error:" + e);
 				} finally {

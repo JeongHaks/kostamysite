@@ -12,7 +12,7 @@
 <!-- 페이징 변수 계산 -->
 <%
 	request.setCharacterEncoding("UTF-8");
-	
+	int no=0;
 	int totalRecord = 0; //전체 레코드 수
 	int numPerPage = 7; //페이지당 레코드 수 
 	int pagePerBlock = 5; //블럭당 페이지 수 
@@ -188,7 +188,7 @@ function check() {
 					for (int i = 0;i<numPerPage; i++) {
 	                     if (i == listSize) break;
 	                     BoardVo vo = blist.get(i);
-	                     int no = vo.getNo();
+	                     no = vo.getNo();
 	                     String name = vo.getUserName();
 	                     int hit = vo.getHit();
 	                     String title = vo.getTitle();
@@ -295,7 +295,7 @@ function check() {
 						<div class="bottom">
 						<align="right">
 						<!-- 글쓰기 버튼을 클릭 시 writeform.jsp 넣어가서 수행 -->
-						<a href="/mysite/board?a=writeform&nowPage=<%=nowPage %>" id="new-book">글쓰기</a>
+						<a href="/mysite/board?a=writeform&nowPage=<%=nowPage %>&no=<%=no %>" id="new-book">글쓰기</a>
 						</div>
 					</c:if>				
 				</div>
@@ -305,6 +305,7 @@ function check() {
 					<input type="hidden" name="nowPage" value="<%=nowPage%>"> 
 					<input type="hidden" name="keyField" value="<%=keyField%>"> 
 					<input type="hidden" name="keyWord" value="<%=keyWord%>">
+					<input type="hidden" name="no" value="<%=no %>">
 				</form>
 			</div>
 		
